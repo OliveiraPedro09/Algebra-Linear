@@ -11,12 +11,12 @@ def matrix_inversa():
     for i in range(row):
         linha = []
         for j in range(col):
-            var = int(input(f'Digite o valor da posição {i+1}x{j+1}: '))
-            if var == '':
-                print('Digite um valor válido')
-                return matrix()
-            else:
+            try:
+                var = int(input(f'Digite o valor da posição {i+1}x{j+1}: '))
                 linha.append(var)
+            except ValueError:
+                print('Valor inválido! Digite um número inteiro.')
+                return
         matrix.append(linha)
 
     print("\nMatriz original:")
@@ -29,6 +29,7 @@ def matrix_inversa():
 
     if det == 0:
         print("\nA matriz não é inversível (determinante igual a zero).")
+        return
     else:
         # Calculando a inversa
         inversa = np.linalg.inv(np_matrix)
@@ -36,58 +37,38 @@ def matrix_inversa():
         print("\nMatriz inversa:")
         print(inversa)
 
-    print('Pressione Enter para não digitar um valor e usar uma variável simbólica')
-    x = input('Digite o valor de RE: ')
-    if x == '':
-        x = sp.symbols('x') # X = RE
-    else:
-        x = int(x)
+    print('Pressione Enter para usar uma variável simbólica')
+    
+    # Função auxiliar para verificar entrada
+    def get_input(prompt, symbol):
+        valor = input(f'Digite o valor de {prompt}: ')
+        if valor == '':
+            return sp.symbols(symbol)
+        return int(valor)
 
-    y = input('Digite o valor de P1: ')
-    if y == '':
-        y = sp.symbols('y') # Y = P1
-    else:
-        y = int(y)
+    x = get_input('RE', 'x')
+    y = get_input('P1', 'y')
+    w = get_input('P2', 'w')
+    z = get_input('RD', 'z')
+    e = get_input('E', 'E')
+    a = get_input('A', 'A')
+    l = get_input('L', 'L')
 
-    w = input('Digite o valor de P2: ')
-    if w == '':
-        w = sp.symbols('w') # W = P2
-    else:
-        w = int(w)
-
-    z = input('Digite o valor de RD: ')
-    if z == '':
-        z = sp.symbols('z') # Z = RD
-    else:
-        z = int(z)
-
-    e = input('Digite o valor de E: ')
-    if e == '':  
-        e = sp.symbols('E') 
-    else:
-        e = int(e)
-
-    a = input('Digite o valor de A: ')
-    if a == '':
-        a = sp.symbols('A')
-    else:
-        a = int(a)
-
-    l = input('Digite o valor de L: ')
-    if l == '':
-        l = sp.symbols('L')
-    else:
-        l = int(l)
-
-    vector = [x*((e*a)/l),y*((e*a)/l),w*((e*a)/l),z*((e*a)/l)]
+    vector = [x * ((e * a) / l), y * ((e * a) / l), w * ((e * a) / l), z * ((e * a) / l)]
 
     solution = []
     for i in range(len(inversa)):
         soma = 0
-        a = []
         for j in range(len(inversa)):
-            soma += inversa[i][j]*vector[j]
-        a.append(soma)
-        solution.append(a)
-    print(solution)
-    print(solution[0][0],solution[1][0],solution[2][0],solution[3][0])
+            soma += inversa[i][j] * vector[j]
+        solution.append(soma)
+
+    # Forçando o U1 e U4 a serem 0
+    solution[0] = 0
+    solution[-1] = 0
+
+    print("\nSolução final:")
+    for sol in solution:
+        print(sol)
+
+matrix_inversa()

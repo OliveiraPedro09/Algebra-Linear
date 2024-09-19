@@ -52,7 +52,7 @@ def matrix():
     else:
         l = int(l)
 
-    vector = [0,x*((e*a)/l),y*((e*a)/l),0]
+    vector = [0 ,x * ((e * a) / l), y * ((e * a) / l), 0]
 
     solution = []
     for i in range(len(matrix)):
